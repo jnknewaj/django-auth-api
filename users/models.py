@@ -44,6 +44,7 @@ class User(AbstractUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now_add=True)
+    is_email_verified = models.BooleanField(default=False)  # added later
 
     objects = CustomUserManager()
 
