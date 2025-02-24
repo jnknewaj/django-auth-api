@@ -135,7 +135,12 @@ AUTH_USER_MODEL = "users.User"
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
-    )
+    ),
+    "EXCEPTION_HANDLER": "products.utils.custom_exception_handler",
+    "DEFAULT_RENDERER_CLASSES": (
+        "rest_framework.renderers.JSONRenderer",  # JSON renderer
+        "rest_framework.renderers.BrowsableAPIRenderer",  # Browsable API
+    ),
 }
 
 # Email configuration

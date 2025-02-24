@@ -22,7 +22,7 @@ from django.contrib.auth.password_validation import validate_password
 User = get_user_model()
 
 
-class UserSerializer(serializers.ModelSerializer):
+class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
@@ -33,14 +33,17 @@ class UserSerializer(serializers.ModelSerializer):
             "phone",
             "role",
             "date_joined",
+            "is_email_verified",
         ]
+        read_only_fields = ["id", "email", "date_joined", "is_email_verified"]
 
 
 # here we can override 'validate()' or 'validate_field_name()'
 class UserRegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["email", "first_name", "last_name", "phone", "password"]
+        # with these fields user will be registered
+        fields = ["email", "first_name", "last_name", "phone", "password", "role"]
         extra_kwargs = {"password": {"write_only": True}}  # Hide password in response
 
     def create(self, validated_data):

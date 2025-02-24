@@ -6,8 +6,13 @@ from .views import (
     PasswordResetConfirmView,
     EmailVerifyView,
     ResendVerificationView,
+    UserProfileView,
 )
+from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
+router = DefaultRouter()
+router.register(r"profile", UserProfileView, basename="user-profile")
 
 # api/users/...
 urlpatterns = [
@@ -32,6 +37,8 @@ urlpatterns = [
         name="resend-verification",
     ),
 ]
+
+urlpatterns += router.urls
 
 
 """
