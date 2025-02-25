@@ -7,29 +7,47 @@ from rest_framework.exceptions import (
 
 
 def custom_exception_handler(exc, context):
+    from rest_framework.views import exception_handler
+
+    # Call REST framework's default exception handler first
     response = exception_handler(exc, context)
 
     if response is not None:
-        # Default error structure
-        custom_response = {
-            "status_code": response.status_code,
-            "message": response.data.get("detail", "An error occurred."),
-            "error": str(exc),
-        }
-
-        # Handle specific exception cases
-        if isinstance(exc, PermissionDenied):
-            custom_response["message"] = (
-                "You do not have permission to perform this action."
-            )
-        elif isinstance(exc, NotAuthenticated):
-            custom_response["message"] = (
-                "Authentication credentials were nottt provided."
-            )
-        elif isinstance(exc, ValidationError):
-            custom_response["message"] = "Invalid input provided."
-            custom_response["errors"] = response.data  # Show detailed validation errors
-
-        response.data = custom_response
+        if isinstance(response.data, list):
+            # Handle list errors
+            response.data = {"errors": response.data}
+        elif isinstance(response.data, dict):
+            # Safely access .get
+            error_detail = response.data.get("detail", "An error occurred.")
+            response.data = {"errors": error_detail}
 
     return response
+
+
+# def custom_exception_handler(exc, context):
+#     response = exception_handler(exc, context)
+
+#     if response is not None:
+#         # Default error structure
+#         custom_response = {
+#             "status_code": response.status_code,
+#             "message": response.data.get("detail", "An error occurred."),
+#             "error": str(exc),
+#         }
+
+#         # Handle specific exception cases
+#         if isinstance(exc, PermissionDenied):
+#             custom_response["message"] = (
+#                 "You do not have permission to perform this action."
+#             )
+#         elif isinstance(exc, NotAuthenticated):
+#             custom_response["message"] = (
+#                 "Authentication credentials were nottt provided."
+#             )
+#         elif isinstance(exc, ValidationError):
+#             custom_response["message"] = "Invalid input provided."
+#             custom_response["errors"] = response.data  # Show detailed validation errors
+
+#         response.data = custom_response
+
+#     return response
